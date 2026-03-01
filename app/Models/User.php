@@ -24,6 +24,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
+        'is_banned',
+        'reputation',
     ];
 
     /**
@@ -62,6 +65,11 @@ class User extends Authenticatable
                     ->withPivot('joined_at', 'left_at')
                     ->withTimestamps()
                     ->using(FlatShareUser::class);
+    }
+
+    public function activeFlatShare(): BelongsToMany
+    {
+        return $this->flatShares()->wherePivotNull('left_at')->where('status', 'active');
     }
 
     public function ownedFlatShares(): HasMany

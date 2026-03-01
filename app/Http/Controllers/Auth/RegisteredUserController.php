@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
         if (User::count() === 0) {
             $role = Role::firstOrCreate(['title' => 'admin']);
         } else {
-            $role = Role::firstOrCreate(['title' => 'member']);
+            $role = Role::firstOrCreate(['title' => 'admin']);
         }
 
 
@@ -48,9 +48,6 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role_id' => $role->id,
-            'reputation' => 0,
-            'is_banned' => false,
-
         ]);
 
         event(new Registered($user));
