@@ -475,6 +475,18 @@
             transform: rotate(90deg);
         }
 
+        .btn-icon:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn-icon:disabled:hover {
+            transform: none;
+            background: white;
+            color: #ff6b6b;
+        }
+
         .roommates-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -577,6 +589,8 @@
             background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
             color: #ff8c00;
         }
+
+        /* Modal Styles */
     </style>
 </head>
 <body>
@@ -625,25 +639,18 @@
                     Who Owes Who
                 </a>
                 
-                <!-- Pending Invites -->
-                <a href="#" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-                    </svg>
-                    Pending Invites
-                    <span class="bg-gradient-to-r from-[#ff6b6b] to-[#4ecdc4] text-white text-xs px-2 py-1 rounded-full ml-auto">3</span>
-                </a>
-                
-                <!-- Categories -->
-                <a href="#" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"/>
-                        <rect x="14" y="3" width="7" height="7"/>
-                        <rect x="14" y="14" width="7" height="7"/>
-                        <rect x="3" y="14" width="7" height="7"/>
-                    </svg>
-                    Categories
-                </a>
+                <!-- Categories - Owner only -->
+                @if($flatShare && auth()->id() === $flatShare->owner_id)
+                    <a href="{{ route('categories.index') }}" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/>
+                            <rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/>
+                            <rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        Categories
+                    </a>
+                @endif
             </div>
 
             <div class="nav-divider"></div>
@@ -700,12 +707,12 @@
                                 Create Flatshare
                             </a>
                             
-                            <a href="#" class="btn-secondary">
+                            <button onclick="openTokenModal()" class="btn-secondary">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M2 12h20M12 2v20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14"/>
                                 </svg>
                                 Join with Token
-                            </a>
+                            </button>
                         </div>
                     </div>
                 @else
@@ -789,12 +796,24 @@
                     <div class="section-header">
                         <h2 class="section-title">Your Roommates</h2>
                         <div class="section-actions">
-                            <a href="#" class="btn-icon" title="Invite new roommate">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="5" x2="12" y2="19"/>
-                                    <line x1="5" y1="12" x2="19" y2="12"/>
-                                </svg>
-                            </a>
+                            @if(auth()->id() === $flatShare->owner_id && $flatShare->hasAvailableSpace())
+                                <form action="{{ route('invitations.store') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn-icon" title="Invite new roommate">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="5" x2="12" y2="19"/>
+                                            <line x1="5" y1="12" x2="19" y2="12"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            @elseif(auth()->id() === $flatShare->owner_id && !$flatShare->hasAvailableSpace())
+                                <button disabled class="btn-icon opacity-50 cursor-not-allowed" title="No space available">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19"/>
+                                        <line x1="5" y1="12" x2="19" y2="12"/>
+                                    </svg>
+                                </button>
+                            @endif
                         </div>
                     </div>
 
@@ -828,5 +847,67 @@
             </div>
         </main>
     </div>
+
+    <!-- Join with Token Modal -->
+    <div id="tokenModal"
+         class="hidden fixed inset-0 z-50 flex items-center justify-center"
+         style="background: rgba(0,0,0,0.5)">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md mx-4">
+
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-800">Join a Flatshare</h3>
+                <button onclick="closeTokenModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <p class="text-sm text-gray-500 mb-5">
+                Paste the invitation token shared with you to view and accept the invitation.
+            </p>
+
+            <div class="mb-4">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                        Invitation Token
+                    </label>
+                    <input type="text"
+                           id="tokenInput"
+                           placeholder="Paste your token here..."
+                           class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-[#ff6b6b] transition">
+                </div>
+
+                <div class="flex gap-3 mt-6">
+                    <button type="button" onclick="closeTokenModal()"
+                            class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-600 font-semibold hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                    <button type="button" onclick="goToInvitation()"
+                            class="flex-1 px-4 py-3 rounded-xl text-white font-semibold hover:opacity-90 transition"
+                            style="background: linear-gradient(135deg, #ff6b6b, #4ecdc4)">
+                        View Invitation
+                    </button>
+                </div>
+
+        </div>
+    </div>
+
+    <script>
+        function openTokenModal() {
+            document.getElementById('tokenModal').classList.remove('hidden');
+        }
+        function closeTokenModal() {
+            document.getElementById('tokenModal').classList.add('hidden');
+        }
+        function goToInvitation() {
+            const token = document.getElementById('tokenInput').value.trim();
+            if (!token) return;
+            window.location.href = '/invitations/' + token;
+        }
+        document.getElementById('tokenModal').addEventListener('click', function(e) {
+            if (e.target === this) closeTokenModal();
+        });
+    </script>
 </body>
 </html>

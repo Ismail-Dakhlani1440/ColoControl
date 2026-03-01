@@ -61,9 +61,8 @@ class FlatShare extends Model
     }
 
     public function createInvitation(): Invitation
-{
-    return $this->invitations()->create([
-        'status' => 'pending'
-    ]);
-}
+    {
+        return $this->pendingInvitations()->first()
+            ?? $this->invitations()->create(['status' => 'pending']);
+    }
 }
