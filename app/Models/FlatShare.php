@@ -45,8 +45,25 @@ class FlatShare extends Model
         return $this->hasMany(Expense::class);
     }
 
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class);
+    }
+    
+    public function pendingInvitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class)->where('status', 'pending');
+    }
+
     public function hasAvailableSpace(): bool
     {
         return $this->activeUsers()->count() < $this->max_flatmate;
     }
+
+    public function createInvitation(): Invitation
+{
+    return $this->invitations()->create([
+        'status' => 'pending'
+    ]);
+}
 }
