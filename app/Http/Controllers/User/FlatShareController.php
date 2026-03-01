@@ -15,7 +15,44 @@ class FlatShareController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $flatShare = $user->activeFlatShare()->first();
+        $stats = null;
+        
+        if ($flatShare) {
+            $flatShare->load(['owner', 'activeUsers', 'expenses']);
+            
+            $totalSpent = $flatShare->expenses()->sum('ammount');
+            $activeMembers = $flatShare->activeUsers;
+            $memberCount = $activeMembers->count();
+            
+            $userPaid = $flatShare->expenses()
+                ->where('payer_id', $user->id)
+                ->sum('ammount');
+            
+            $fairShare = $memberCount > 0 ? $totalSpent / $memberCount : 0;
+            
+            $userBalance = $userPaid - $fairShare;
+            
+            $roommates = $activeMembers->map(function ($member) use ($flatShare) {
+                return [
+                    'id' => $member->id,
+                    'name' => $member->name,
+                    'reputation' => $member->reputation,
+                    'joined_date' => $member->pivot->joined_at,
+                    'badge' => $member->id === $flatShare->owner_id ? 'owner' : 'member',
+                ];
+            });
+            
+            $stats = [
+                'total_spent' => $totalSpent,
+                'user_balance' => $userBalance,
+                'roommate_count' => $memberCount,
+                'roommates' => $roommates,
+            ];
+        }
+        
+        return view('flatshares.index', compact('flatShare', 'stats'));
     }
 
     /**
@@ -51,7 +88,7 @@ class FlatShareController extends Controller
             'left_at' => null,
         ]);
 
-        return redirect()->route('dashboard', $flatShare)
+        return redirect()->route('flatshares.index')
             ->with('success', 'Colocation créée avec succès !');
 
     }

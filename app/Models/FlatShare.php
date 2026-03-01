@@ -50,9 +50,9 @@ class FlatShare extends Model
         return $this->hasMany(Invitation::class);
     }
     
-    public function activeInvitations(): HasMany
+    public function pendingInvitations(): HasMany
     {
-        return $this->hasMany(Invitation::class)->where('status', 'active');
+        return $this->hasMany(Invitation::class)->where('status', 'pending');
     }
 
     public function hasAvailableSpace(): bool
@@ -63,7 +63,7 @@ class FlatShare extends Model
     public function createInvitation(): Invitation
 {
     return $this->invitations()->create([
-        'status' => 'active'
+        'status' => 'pending'
     ]);
 }
 }

@@ -232,6 +232,13 @@
             padding: 2rem;
             margin-bottom: 2rem;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-text {
+            flex: 1;
         }
 
         .welcome-title {
@@ -246,6 +253,22 @@
         .welcome-subtitle {
             color: #666;
             font-size: 1.1rem;
+        }
+
+        .flatshare-badge {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .flatshare-badge svg {
+            width: 20px;
+            height: 20px;
         }
 
         /* Empty state */
@@ -345,7 +368,7 @@
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -407,17 +430,54 @@
             color: #ff6b6b;
         }
 
+        .stat-helper {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
         /* Roommates Section */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
         .section-title {
             font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
             color: #333;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #ff6b6b;
+            color: #ff6b6b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: #ff6b6b;
+            color: white;
+            transform: rotate(90deg);
         }
 
         .roommates-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
         }
 
@@ -428,11 +488,34 @@
             padding: 1.5rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .roommate-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .roommate-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .roommate-badge.owner {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+
+        .roommate-badge.member {
+            background: #e9ecef;
+            color: #666;
         }
 
         .roommate-header {
@@ -443,8 +526,8 @@
         }
 
         .roommate-avatar {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
             border-radius: 50%;
             display: flex;
@@ -452,7 +535,7 @@
             justify-content: center;
             color: white;
             font-weight: 600;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
         }
 
         .roommate-info {
@@ -462,7 +545,7 @@
         .roommate-name {
             font-weight: 600;
             color: #333;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             margin-bottom: 0.25rem;
         }
 
@@ -477,17 +560,22 @@
             display: inline-flex;
             align-items: center;
             gap: 0.25rem;
-            padding: 0.25rem 0.75rem;
+            padding: 0.35rem 1rem;
             background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(78, 205, 196, 0.1));
             border-radius: 2rem;
             color: #ff6b6b;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 500;
         }
 
         .reputation-badge svg {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
+        }
+
+        .reputation-badge.high {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+            color: #ff8c00;
         }
     </style>
 </head>
@@ -510,7 +598,7 @@
 
             <div class="nav-links">
                 <!-- Flatshare (Active) -->
-                <a href="{{ route('dashboard') }}" class="nav-link active">
+                <a href="{{ route('flatshares.index') }}" class="nav-link active">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                         <polyline points="9 22 9 12 15 12 15 22"/>
@@ -585,14 +673,15 @@
         <!-- Main Content -->       
         <main class="main-content">
             <div class="content-wrapper">
-                <!-- Welcome Section -->
-                <div class="welcome-section">
-                    <h1 class="welcome-title">Your Flatshare, {{ auth()->user()->name }}! 👋</h1>
-                    <p class="welcome-subtitle">Manage your colocation, track expenses, and stay organized.</p>
-                </div>
-
-                @if(empty($flatshare))
+                @if(!$flatShare)
                     <!-- No Flatshare - Show Create/Join Options -->
+                    <div class="welcome-section">
+                        <div class="welcome-text">
+                            <h1 class="welcome-title">Welcome to ColoControll, {{ auth()->user()->name }}! 👋</h1>
+                            <p class="welcome-subtitle">Start your colocation journey today.</p>
+                        </div>
+                    </div>
+
                     <div class="empty-state">
                         <div class="empty-state-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -621,6 +710,20 @@
                     </div>
                 @else
                     <!-- Has Flatshare - Show Stats and Roommates -->
+                    <div class="welcome-section">
+                        <div class="welcome-text">
+                            <h1 class="welcome-title">{{ $flatShare->name }}</h1>
+                            <p class="welcome-subtitle">Manage your colocation, track expenses, and stay organized.</p>
+                        </div>
+                        <div class="flatshare-badge">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            {{ $stats['roommate_count'] }} {{ Str::plural('Roommate', $stats['roommate_count']) }}
+                        </div>
+                    </div>
+
                     <div class="stats-grid">
                         <!-- Total Spendings -->
                         <div class="stat-card">
@@ -632,12 +735,13 @@
                                         <path d="M12 6v2M12 16v2"/>
                                     </svg>
                                 </div>
-                                <span class="stat-label">Total Spendings</span>
+                                <span class="stat-label">Total Spent</span>
                             </div>
-                            <div class="stat-value">${{ number_format($totalSpendings, 2) }}</div>
+                            <div class="stat-value">${{ number_format($stats['total_spent'], 2) }}</div>
+                            <div class="stat-helper">All time expenses</div>
                         </div>
-
-                        <!-- Amount Contributed -->
+                        
+                        <!-- User Balance -->
                         <div class="stat-card">
                             <div class="stat-header">
                                 <div class="stat-icon">
@@ -647,23 +751,20 @@
                                         <line x1="10" y1="14" x2="20" y2="4"/>
                                     </svg>
                                 </div>
-                                <span class="stat-label">You Contributed</span>
+                                <span class="stat-label">Your Balance</span>
                             </div>
-                            <div class="stat-value positive">${{ number_format($amountContributed, 2) }}</div>
-                        </div>
-
-                        <!-- Debt -->
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <div class="stat-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M4 7h16M7 7v10M17 7v10M10 7v10M14 7v10"/>
-                                        <rect x="2" y="3" width="20" height="18" rx="2"/>
-                                    </svg>
-                                </div>
-                                <span class="stat-label">Your Debt</span>
+                            <div class="stat-value {{ $stats['user_balance'] >= 0 ? 'positive' : 'negative' }}">
+                                ${{ number_format(abs($stats['user_balance']), 2) }}
                             </div>
-                            <div class="stat-value negative">${{ number_format($debt, 2) }}</div>
+                            <div class="stat-helper">
+                                @if($stats['user_balance'] > 0)
+                                    You are owed money
+                                @elseif($stats['user_balance'] < 0)
+                                    You owe money
+                                @else
+                                    You're all settled up
+                                @endif
+                            </div>
                         </div>
 
                         <!-- Roommates Count -->
@@ -677,33 +778,48 @@
                                         <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                                     </svg>
                                 </div>
-                                <span class="stat-label">Roommates</span>
+                                <span class="stat-label">Fair Share</span>
                             </div>
-                            <div class="stat-value">{{ count($roommates) }}</div>
+                            <div class="stat-value">${{ number_format($stats['total_spent'] / $stats['roommate_count'], 2) }}</div>
+                            <div class="stat-helper">Per person ({{ $stats['roommate_count'] }} people)</div>
                         </div>
                     </div>
 
                     <!-- Roommates Section -->
-                    <h2 class="section-title">Your Roommates</h2>
+                    <div class="section-header">
+                        <h2 class="section-title">Your Roommates</h2>
+                        <div class="section-actions">
+                            <a href="#" class="btn-icon" title="Invite new roommate">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
                     <div class="roommates-grid">
-                        @foreach($roommates as $roommate)
+                        @foreach($stats['roommates'] as $roommate)
                             <div class="roommate-card">
+                                <div class="roommate-badge {{ $roommate['badge'] }}">
+                                    {{ $roommate['badge'] }}
+                                </div>
                                 <div class="roommate-header">
                                     <div class="roommate-avatar">
-                                        {{ substr($roommate->name, 0, 1) }}
+                                        {{ substr($roommate['name'], 0, 1) }}
                                     </div>
                                     <div class="roommate-info">
-                                        <div class="roommate-name">{{ $roommate->name }}</div>
+                                        <div class="roommate-name">{{ $roommate['name'] }}</div>
                                         <div class="roommate-meta">
-                                            <span>Joined {{ $roommate->joined_date }}</span>
+                                            <span>Joined {{ \Carbon\Carbon::parse($roommate['joined_date'])->format('M d, Y') }}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="reputation-badge">
+                                <div class="reputation-badge {{ $roommate['reputation'] >= 4 ? 'high' : '' }}">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                                     </svg>
-                                    Reputation: {{ $roommate->reputation }}
+                                    {{ $roommate['reputation'] }} Reputation
                                 </div>
                             </div>
                         @endforeach

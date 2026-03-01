@@ -30,9 +30,9 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        return redirect()->route('dashboard');
+        return redirect()->route('flatshares.index');
     }
-
+    
     /**
      * Destroy an authenticated session.
      */

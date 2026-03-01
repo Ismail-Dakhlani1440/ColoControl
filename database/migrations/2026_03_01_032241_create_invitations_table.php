@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('invitations', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignId('flat_share_id')->constrained('flat_shares')->onDelete('cascade');
-            $table->enum('status', ['active', 'expired'])->default('active');
+            $table->enum('status', ['pending', 'expired'])->default('pending');
             $table->timestamps();
         });
     }

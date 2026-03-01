@@ -25,9 +25,9 @@ class Invitation extends Model
         return $this->belongsTo(FlatShare::class);
     }
 
-    public function isActive(): bool
+    public function isPending(): bool
     {
-        return $this->status === 'active';
+        return $this->status === 'pending';
     }
 
     public function isExpired(): bool
