@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->id();
             $table->boolean('payed')->default(false);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('expense_id')->nullable()->constrained('expenses')->onDelete('cascade');
+            $table->foreignId('expense_id')->constrained('expenses')->onDelete('cascade');
+            $table->primary(['user_id', 'expense_id']);
             $table->timestamps();
+            $table->unique(['user_id', 'expense_id']);
         });
     }
 
