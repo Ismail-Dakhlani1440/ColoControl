@@ -6,6 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany; 
 
 class User extends Authenticatable
 {
@@ -43,6 +46,55 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_banned' => 'boolean',
+            'reputation' => 'integer',
         ];
     }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function flatShares(): BelongsToMany
+    {
+        return $this->belongsToMany(FlatShare::class, 'flat_share_user')
+                    ->withPivot('joined_at', 'left_at')
+                    ->withTimestamps()
+                    ->using(FlatShareUser::class);
+    }
+
+    public function ownedFlatShares(): HasMany
+    {
+        return $this->hasMany(FlatShare::class, 'owner_id');
+    }
+
+    public function createdExpenses(): HasMany
+    {
+        return $this->hasMany(Expense::class, 'creator_id');
+    }
+
+    public function paidExpenses(): HasMany
+    {
+        return $this->hasMany(Expense::class, 'payer_id');
+    }
+
+    public function expenses(): BelongsToMany
+    {
+        return $this->belongsToMany(Expense::class, 'payments')
+                    ->withPivot('payed')
+                    ->withTimestamps()
+                    ->using(Payment::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'user_id');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role?->title === 'admin';
+    }
+
 }
