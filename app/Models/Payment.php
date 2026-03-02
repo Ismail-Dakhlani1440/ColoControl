@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payment extends Pivot
 {
-    protected $primaryKey = ['user_id', 'expense_id'];
+    protected $table = 'payments';
 
     protected $fillable = ['user_id', 'expense_id', 'payed'];
 

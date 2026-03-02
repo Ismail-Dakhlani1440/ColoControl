@@ -36,7 +36,7 @@ class Expense extends Model
 
     public function categorie(): BelongsTo
     {
-        return $this->belongsTo(Categorie::class);
+        return $this->belongsTo(Categorie::class, 'category_id');
     }
 
     public function users(): BelongsToMany
@@ -49,13 +49,13 @@ class Expense extends Model
 
     public function payments(): HasMany
     {
-        return $this->hasMany(Payment::class, 'expense_id');
+        return $this->hasMany(Payment::class, 'expense_id')->from('payments');
     }
 
-     public function getSplitAmount(): float
+    public function getSplitAmount(): float
     {
-        $activeUsers = $this->flatShare->activeUsers()->count();
-        return $activeUsers > 0 ? round($this->ammount / $activeUsers, 2) : 0;
+        $memberCountAtCreation = $this->payments()->count();
+        return $memberCountAtCreation > 0 ? round($this->ammount / $memberCountAtCreation, 2) : 0;
     }
 
     public function getDebtors()
@@ -76,9 +76,9 @@ class Expense extends Model
 
     public function isSettled(): bool
     {
-        $totalUsers = $this->flatShare->activeUsers()->count();
-        $paidCount = $this->users()->wherePivot('payed', true)->count();
-        return $paidCount === $totalUsers;
+        $totalInSplit = $this->payments()->count();
+        $paidCount    = $this->payments()->where('payed', true)->count();
+        return $paidCount === $totalInSplit;
     }
 
     public function getOwedAmount(): float
@@ -94,7 +94,7 @@ class Expense extends Model
         foreach ($activeUsers as $user) {
             if (!$this->users()->where('user_id', $user->id)->exists()) {
                 $this->users()->attach($user->id, [
-                    'payed' => ($user->id === $this->payer_id),
+                    'payed' => ($user->id == $this->payer_id),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

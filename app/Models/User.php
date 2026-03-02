@@ -105,4 +105,69 @@ class User extends Authenticatable
         return $this->role?->title === 'admin';
     }
 
+    public function amountOwedInFlatShare(FlatShare $flatShare): float
+    {
+        $expensesPaidByMe = $flatShare->expenses()
+            ->with('payments')
+            ->where('payer_id', $this->id)
+            ->get();
+
+        $totalOwed = 0;
+
+        foreach ($expensesPaidByMe as $expense) {
+            $splitAmount = $expense->getSplitAmount() ?? 0;
+
+            $unsettledMembers = $expense->payments
+                ->where('user_id', '!=', $this->id)
+                ->where('payed', false)
+                ->count();
+
+            $totalOwed += $splitAmount * $unsettledMembers;
+        }
+
+        return $totalOwed;
+    }
+
+    public function amountOwingInFlatShare(FlatShare $flatShare): float
+    {
+        $expensesPaidByOthers = $flatShare->expenses()
+            ->with('payments')
+            ->where('payer_id', '!=', $this->id)
+            ->get();
+
+        $totalOwing = 0;
+
+        foreach ($expensesPaidByOthers as $expense) {
+            $myPayment = $expense->payments->firstWhere('user_id', $this->id);
+
+            $iHaveNotPaidBack = $myPayment && !$myPayment->payed;
+
+            if ($iHaveNotPaidBack) {
+                $totalOwing += $expense->getSplitAmount() ?? 0;
+            }
+        }
+
+        return $totalOwing;
+    }
+
+    public function balanceInFlatShare(FlatShare $flatShare): float
+    {
+        $owed  = $this->amountOwedInFlatShare($flatShare) ?? 0;
+        $owing = $this->amountOwingInFlatShare($flatShare) ?? 0;
+
+        return $owed - $owing;
+    }
+
+    public function adjustReputationOnLeave(FlatShare $flatShare): void
+    {
+        $stillOwes        = $this->amountOwingInFlatShare($flatShare) > 0;
+        $othersOweHim     = $this->amountOwedInFlatShare($flatShare) > 0;
+
+        if ($stillOwes) {
+            $this->decrement('reputation');
+        } elseif ($othersOweHim) {
+            $this->increment('reputation');
+        }
+    }
+
 }

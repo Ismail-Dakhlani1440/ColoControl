@@ -611,7 +611,6 @@
             </div>
 
             <div class="nav-links">
-                <!-- Flatshare (Active) -->
                 <a href="{{ route('flatshares.index') }}" class="nav-link active">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -619,37 +618,36 @@
                     </svg>
                     Flatshare
                 </a>
-                
-                <!-- Expenses -->
-                <a href="#" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                    </svg>
-                    Expenses
-                </a>
-                
-                <!-- Who Owes Who -->
-                <a href="#" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 12V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
-                        <path d="M16.5 16.5L21 21"/>
-                        <path d="M21 16.5L16.5 21"/>
-                    </svg>
-                    Who Owes Who
-                </a>
-                
-                <!-- Categories - Owner only -->
-                @if($flatShare && auth()->id() === $flatShare->owner_id)
-                    <a href="{{ route('categories.index') }}" class="nav-link">
+
+                @if($flatShare)
+                    <a href="{{ route('expenses.index') }}" class="nav-link">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="7" height="7"/>
-                            <rect x="14" y="3" width="7" height="7"/>
-                            <rect x="14" y="14" width="7" height="7"/>
-                            <rect x="3" y="14" width="7" height="7"/>
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
                         </svg>
-                        Categories
+                        Expenses
                     </a>
+
+                    <a href="{{ route('debts.index') }}" class="nav-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
+                            <path d="M16.5 16.5L21 21"/>
+                            <path d="M21 16.5L16.5 21"/>
+                        </svg>
+                        Who Owes Who
+                    </a>
+
+                    @if(auth()->id() === $flatShare->owner_id)
+                        <a href="{{ route('categories.index') }}" class="nav-link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"/>
+                                <rect x="14" y="3" width="7" height="7"/>
+                                <rect x="14" y="14" width="7" height="7"/>
+                                <rect x="3" y="14" width="7" height="7"/>
+                            </svg>
+                            Categories
+                        </a>
+                    @endif
                 @endif
             </div>
 
@@ -761,13 +759,13 @@
                                 <span class="stat-label">Your Balance</span>
                             </div>
                             <div class="stat-value {{ $stats['user_balance'] >= 0 ? 'positive' : 'negative' }}">
-                                ${{ number_format(abs($stats['user_balance']), 2) }}
+                                {{ $stats['user_balance'] >= 0 ? '+' : '-' }}${{ number_format(abs($stats['user_balance']), 2) }}
                             </div>
                             <div class="stat-helper">
                                 @if($stats['user_balance'] > 0)
-                                    You are owed money
+                                    Owed ${{ number_format($stats['amount_owed'], 2) }} · Owes ${{ number_format($stats['amount_owes'], 2) }}
                                 @elseif($stats['user_balance'] < 0)
-                                    You owe money
+                                    Owed ${{ number_format($stats['amount_owed'], 2) }} · Owes ${{ number_format($stats['amount_owes'], 2) }}
                                 @else
                                     You're all settled up
                                 @endif
@@ -787,7 +785,7 @@
                                 </div>
                                 <span class="stat-label">Fair Share</span>
                             </div>
-                            <div class="stat-value">${{ number_format($stats['total_spent'] / $stats['roommate_count'], 2) }}</div>
+                            <div class="stat-value">${{ number_format($stats['fair_share'], 2) }}</div>
                             <div class="stat-helper">Per person ({{ $stats['roommate_count'] }} people)</div>
                         </div>
                     </div>
@@ -840,9 +838,63 @@
                                     </svg>
                                     {{ $roommate['reputation'] }} Reputation
                                 </div>
+                                <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid #f0f0f0;font-size:.82rem;font-weight:600;
+                                    color: {{ $roommate['balance'] > 0 ? '#0d9488' : ($roommate['balance'] < 0 ? '#e11d48' : '#888') }}">
+                                    @if($roommate['balance'] > 0)
+                                        Owed +${{ number_format($roommate['balance'], 2) }}
+                                    @elseif($roommate['balance'] < 0)
+                                        Owes ${{ number_format(abs($roommate['balance']), 2) }}
+                                    @else
+                                        Settled up
+                                    @endif
+                                </div>
+
+                                {{-- Owner can remove any non-owner member --}}
+                                @if(auth()->id() === $flatShare->owner_id && $roommate['id'] !== $flatShare->owner_id)
+                                    <form action="{{ route('flatshares.removeMember', $roommate['id']) }}" method="POST"
+                                          onsubmit="return confirm('Remove {{ addslashes($roommate['name']) }} from the colocation?')"
+                                          style="margin-top:.75rem">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" style="width:100%;padding:.5rem;border:1.5px solid #fecaca;border-radius:.75rem;background:#fff5f5;color:#e11d48;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s"
+                                                onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fff5f5'">
+                                            Remove Member
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         @endforeach
                     </div>
+
+                    {{-- Leave button for non-owners --}}
+                    @if(auth()->id() !== $flatShare->owner_id)
+                        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #f0f0f0">
+                            <form action="{{ route('flatshares.leave') }}" method="POST"
+                                  onsubmit="return confirm('Are you sure you want to leave this colocation? This may affect your reputation.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" style="padding:.75rem 1.5rem;border:1.5px solid #fecaca;border-radius:1rem;background:#fff5f5;color:#e11d48;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s"
+                                        onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fff5f5'">
+                                    Leave Colocation
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+
+                    {{-- Cancel button for owner --}}
+                    @if(auth()->id() === $flatShare->owner_id)
+                        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #f0f0f0">
+                            <form action="{{ route('flatshares.cancel') }}" method="POST"
+                                  onsubmit="return confirm('Cancel this colocation? All members will be removed.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" style="padding:.75rem 1.5rem;border:1.5px solid #fecaca;border-radius:1rem;background:#fff5f5;color:#e11d48;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s"
+                                        onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fff5f5'">
+                                    Cancel Colocation
+                                </button>
+                            </form>
+                        </div>
+                    @endif
                 @endif
             </div>
         </main>
