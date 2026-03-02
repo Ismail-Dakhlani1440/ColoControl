@@ -7,6 +7,7 @@ use App\Http\Controllers\User\CategorieController;
 use App\Http\Controllers\User\ExpenseController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\FlatShareController;
+use App\Http\Controllers\DebtController;
 
 Route::get('/', function () {
     return redirect()->route('flatshares.index');
@@ -14,12 +15,13 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('expenses', ExpenseController::class)->except(['edit', 'update']);
-Route::post('/expenses/{expense}/mark-paid', [ExpenseController::class, 'markPaid'])->name('expenses.markPaid');
+    Route::post('/expenses/{expense}/mark-paid', [ExpenseController::class, 'markPaid'])->name('expenses.markPaid');
     Route::resource('flatshares', FlatShareController::class);
     Route::resource('invitations', InvitationController::class);
     Route::resource('categories', CategorieController::class)->except(['show']);
     Route::post('/invitations/{invitation}/accept', [InvitationController::class, 'accept'])->name('invitations.accept');
     Route::post('/invitations/{invitation}/reject', [InvitationController::class, 'reject'])->name('invitations.reject');
+    Route::resource('debts', DebtController::class)->only(['index']);
 });
 
 

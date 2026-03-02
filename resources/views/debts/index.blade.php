@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expenses - ColoControll</title>
+    <title>Who Owes Who - ColoControll</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=space-grotesk:400,500,600,700" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -74,6 +74,7 @@
             min-height: 100vh
         }
 
+        /* Nav */
         .side-nav {
             width: 280px;
             background: rgba(255, 255, 255, .95);
@@ -193,6 +194,7 @@
             color: #ff6b6b
         }
 
+        /* Main */
         .main-content {
             flex: 1;
             margin-left: 280px;
@@ -200,7 +202,7 @@
         }
 
         .content-wrapper {
-            max-width: 1100px;
+            max-width: 900px;
             margin: 0 auto
         }
 
@@ -210,10 +212,7 @@
             border-radius: 2rem;
             padding: 2rem;
             margin-bottom: 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, .1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .1)
         }
 
         .page-title {
@@ -230,143 +229,8 @@
             margin-top: .25rem
         }
 
-        .btn-primary {
-            padding: .875rem 1.75rem;
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            border: none;
-            border-radius: 2rem;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: .5rem;
-            font-size: .95rem;
-            text-decoration: none
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255, 107, 107, .3)
-        }
-
-        .alert {
-            padding: 1rem 1.5rem;
-            border-radius: 1rem;
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-            font-size: .9rem
-        }
-
-        .alert-success {
-            background: #f0fdf4;
-            color: #15803d;
-            border: 1px solid #bbf7d0
-        }
-
-        .alert-error {
-            background: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fecaca
-        }
-
-        .expense-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem
-        }
-
-        .expense-card {
-            background: rgba(255, 255, 255, .95);
-            backdrop-filter: blur(10px);
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
-            transition: all .3s ease;
-            text-decoration: none;
-            display: block;
-            border-left: 5px solid #e5e7eb
-        }
-
-        .expense-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, .12)
-        }
-
-        .expense-row {
-            display: flex;
-            align-items: center;
-            gap: 1rem
-        }
-
-        .expense-main {
-            flex: 1
-        }
-
-        .expense-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: .25rem
-        }
-
-        .expense-meta {
-            font-size: .82rem;
-            color: #888;
-            display: flex;
-            align-items: center;
-            gap: .75rem;
-            flex-wrap: wrap
-        }
-
-        .cat-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: .3rem;
-            padding: .2rem .6rem;
-            border-radius: 2rem;
-            font-size: .75rem;
-            font-weight: 600
-        }
-
-        .expense-amount {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #333;
-            white-space: nowrap
-        }
-
-        .expense-amount span {
-            font-size: .8rem;
-            color: #888;
-            font-weight: 500;
-            display: block;
-            text-align: right
-        }
-
-        .settlement-bar {
-            display: flex;
-            gap: .3rem;
-            margin-top: .75rem;
-            flex-wrap: wrap
-        }
-
-        .pip {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%
-        }
-
-        .pip.paid {
-            background: #4ecdc4
-        }
-
-        .pip.unpaid {
-            background: #e5e7eb
-        }
-
-        .empty-state {
+        /* All settled */
+        .settled-card {
             background: rgba(255, 255, 255, .95);
             border-radius: 2rem;
             padding: 4rem 2rem;
@@ -374,16 +238,160 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, .1)
         }
 
-        .empty-state h3 {
+        .settled-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem
+        }
+
+        .settled-title {
             font-size: 1.5rem;
             font-weight: 700;
             color: #333;
-            margin-bottom: .75rem
+            margin-bottom: .5rem
         }
 
-        .empty-state p {
-            color: #666;
-            margin-bottom: 2rem
+        .settled-sub {
+            color: #888;
+            font-size: .95rem
+        }
+
+        /* Debt cards */
+        .debts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem
+        }
+
+        .debt-card {
+            background: rgba(255, 255, 255, .95);
+            border-radius: 1.75rem;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: transform .2s, box-shadow .2s
+        }
+
+        .debt-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .12)
+        }
+
+        .debt-card.mine {
+            border-left: 5px solid #ff6b6b
+        }
+
+        .debt-card.owed-to-me {
+            border-left: 5px solid #4ecdc4
+        }
+
+        /* Person bubbles */
+        .person {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .4rem;
+            min-width: 80px
+        }
+
+        .avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0
+        }
+
+        .person-name {
+            font-size: .78rem;
+            font-weight: 600;
+            color: #555;
+            text-align: center;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .person-you {
+            font-size: .7rem;
+            color: #aaa;
+            font-weight: 500
+        }
+
+        /* Arrow area */
+        .arrow-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .4rem
+        }
+
+        .arrow-track {
+            width: 100%;
+            height: 3px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            position: relative;
+            display: flex;
+            align-items: center
+        }
+
+        .arrow-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            position: relative;
+            animation: fillIn .8s ease forwards
+        }
+
+        @keyframes fillIn {
+            from {
+                width: 0
+            }
+
+            to {
+                width: 100%
+            }
+        }
+
+        .arrow-head {
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 10px solid #4ecdc4;
+            flex-shrink: 0;
+            margin-left: -1px
+        }
+
+        .amount-bubble {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: .35rem 1rem;
+            border-radius: 2rem;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, .3)
+        }
+
+        .owes-label {
+            font-size: .75rem;
+            color: #aaa;
+            font-weight: 500
         }
     </style>
 </head>
@@ -392,6 +400,8 @@
     <div class="shape shape-1"></div>
     <div class="shape shape-2"></div>
     <div class="dashboard-container">
+
+        {{-- NAV --}}
         <nav class="side-nav">
             <div class="nav-brand">
                 <div class="nav-brand-icon">
@@ -409,7 +419,7 @@
                     </svg>
                     Flatshare
                 </a>
-                <a href="{{ route('expenses.index') }}" class="nav-link active">
+                <a href="{{ route('expenses.index') }}" class="nav-link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10" />
                         <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
@@ -417,7 +427,7 @@
                     </svg>
                     Expenses
                 </a>
-                <a href="{{ route('debts.index') }}" class="nav-link">
+                <a href="{{ route('debts.index') }}" class="nav-link active">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path
                             d="M21 12V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" />
@@ -457,102 +467,75 @@
             </div>
         </nav>
 
+        {{-- MAIN --}}
         <main class="main-content">
             <div class="content-wrapper">
 
-                @if(session('success'))
-                    <div class="alert alert-success">✓ {{ session('success') }}</div>
-                @endif
-                @if(session('error'))
-                    <div class="alert alert-error">{{ session('error') }}</div>
-                @endif
-
                 <div class="page-header">
-                    <div>
-                        <h1 class="page-title">Expenses</h1>
-                        <p class="page-subtitle">{{ $flatShare->name }} · {{ $expenses->count() }}
-                            {{ Str::plural('expense', $expenses->count()) }}</p>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-                        <form method="GET" action="{{ route('expenses.index') }}"
-                            style="display:flex;align-items:center;gap:.5rem">
-                            <input type="month" name="month" value="{{ $month }}"
-                                style="padding:.625rem 1rem;background:white;border:2px solid #e5e7eb;border-radius:1rem;font-family:'Space Grotesk',sans-serif;font-size:.88rem;color:#333;outline:none;cursor:pointer"
-                                onchange="this.form.submit()">
-                            @if($month)
-                                <a href="{{ route('expenses.index') }}"
-                                    style="padding:.625rem 1rem;border:2px solid #e5e7eb;border-radius:1rem;color:#888;font-size:.85rem;font-weight:600;text-decoration:none;white-space:nowrap;transition:all .2s"
-                                    onmouseover="this.style.borderColor='#ff6b6b';this.style.color='#ff6b6b'"
-                                    onmouseout="this.style.borderColor='#e5e7eb';this.style.color='#888'">
-                                    Clear
-                                </a>
-                            @endif
-                        </form>
-                        <a href="{{ route('expenses.create') }}" class="btn-primary">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19" />
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                            </svg>
-                            Add Expense
-                        </a>
-                    </div>
+                    <h1 class="page-title">Who Owes Who</h1>
+                    <p class="page-subtitle">{{ $flatShare->name }} · Net balances across all expenses</p>
                 </div>
 
-                @if($expenses->isEmpty())
-                    <div class="empty-state">
-                        <h3>No expenses yet</h3>
-                        <p>Add your first expense to start tracking costs.</p>
-                        <a href="{{ route('expenses.create') }}" class="btn-primary" style="display:inline-flex">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19" />
-                                <line x1="5" y1="12" x2="19" y2="12" />
+                @php
+                    $colors = ['#ff6b6b', '#4ecdc4', '#667eea', '#f6c90e', '#a78bfa', '#fb923c'];
+                    $memberColors = [];
+                    foreach ($members as $id => $member) {
+                        $memberColors[$id] = $colors[$id % count($colors)];
+                    }
+                @endphp
+
+                @if(empty($netDebts))
+                    <div class="settled-card">
+                        <div class="settled-icon">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
                             </svg>
-                            Add Expense
-                        </a>
+                        </div>
+                        <div class="settled-title">Everyone is settled up! 🎉</div>
+                        <div class="settled-sub">No outstanding debts in {{ $flatShare->name }}</div>
                     </div>
                 @else
-                    <div class="expense-list">
-                        @foreach($expenses as $expense)
+                    <div class="debts-list">
+                        @foreach($netDebts as $debt)
                             @php
-                                $paidCount = $expense->payments->where('payed', true)->count();
-                                $totalCount = $expense->payments->count();
-                                $catColor = $expense->categorie?->color ?? '#e5e7eb';
+                                $isMe = $debt['from']->id === auth()->id();
+                                $owedToMe = $debt['to']->id === auth()->id();
                             @endphp
-                            <a href="{{ route('expenses.show', $expense) }}" class="expense-card"
-                                style="border-left-color: {{ $catColor }}">
-                                <div class="expense-row">
-                                    <div class="expense-main">
-                                        <div class="expense-title">{{ $expense->title }}</div>
-                                        <div class="expense-meta">
-                                            <span>{{ $expense->date->format('M d, Y') }}</span>
-                                            <span>Paid by <strong>{{ $expense->payer->name }}</strong></span>
-                                            <span>Created by {{ $expense->creator->name }}</span>
-                                            @if($expense->categorie)
-                                                <span class="cat-badge"
-                                                    style="background: {{ $expense->categorie->color }}22; color: {{ $expense->categorie->color }}">
-                                                    <span
-                                                        style="width:7px;height:7px;border-radius:50%;background:{{ $expense->categorie->color }};display:inline-block;flex-shrink:0"></span>
-                                                    {{ $expense->categorie->title }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                        <!-- Settlement pips -->
-                                        <div class="settlement-bar">
-                                            @foreach($expense->payments as $payment)
-                                                <div class="pip {{ $payment->payed ? 'paid' : 'unpaid' }}"
-                                                    title="{{ $payment->user->name }}: {{ $payment->payed ? 'Paid' : 'Owes' }}">
-                                                </div>
-                                            @endforeach
-                                        </div>
+                            <div class="debt-card {{ $isMe ? 'mine' : ($owedToMe ? 'owed-to-me' : '') }}">
+
+                                {{-- FROM person --}}
+                                <div class="person">
+                                    <div class="avatar" style="background: {{ $memberColors[$debt['from']->id] }}">
+                                        {{ substr($debt['from']->name, 0, 1) }}
                                     </div>
-                                    <div class="expense-amount">
-                                        ${{ number_format($expense->ammount, 2) }}
-                                        <span>{{ $paidCount }}/{{ $totalCount }} settled</span>
+                                    <div class="person-name">{{ $debt['from']->name }}</div>
+                                    @if($isMe)
+                                    <div class="person-you">you</div>@endif
+                                </div>
+
+                                {{-- Arrow + amount --}}
+                                <div class="arrow-section">
+                                    <div class="owes-label">owes</div>
+                                    <div class="amount-bubble">${{ number_format($debt['amount'], 2) }}</div>
+                                    <div style="width:100%;display:flex;align-items:center">
+                                        <div class="arrow-track" style="flex:1">
+                                            <div class="arrow-fill"></div>
+                                        </div>
+                                        <div class="arrow-head"></div>
                                     </div>
                                 </div>
-                            </a>
+
+                                {{-- TO person --}}
+                                <div class="person">
+                                    <div class="avatar" style="background: {{ $memberColors[$debt['to']->id] }}">
+                                        {{ substr($debt['to']->name, 0, 1) }}
+                                    </div>
+                                    <div class="person-name">{{ $debt['to']->name }}</div>
+                                    @if($owedToMe)
+                                    <div class="person-you">you</div>@endif
+                                </div>
+
+                            </div>
                         @endforeach
                     </div>
                 @endif

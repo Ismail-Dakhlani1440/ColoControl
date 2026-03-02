@@ -630,7 +630,7 @@
                 </a>
                 
                 <!-- Who Owes Who -->
-                <a href="#" class="nav-link">
+                <a href="{{ route('debts.index') }}" class="nav-link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 12V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
                         <path d="M16.5 16.5L21 21"/>
@@ -765,9 +765,9 @@
                             </div>
                             <div class="stat-helper">
                                 @if($stats['user_balance'] > 0)
-                                    Owed ${{ number_format($stats['amount_owed'] ?? 0, 2) }} · Owes ${{ number_format($stats['amount_owes'] ?? 0, 2) }}
+                                    Owed ${{ number_format($stats['amount_owed'], 2) }} · Owes ${{ number_format($stats['amount_owes'], 2) }}
                                 @elseif($stats['user_balance'] < 0)
-                                    Owed ${{ number_format($stats['amount_owed'] ?? 0, 2) }} · Owes ${{ number_format($stats['amount_owes'] ?? 0, 2) }}
+                                    Owed ${{ number_format($stats['amount_owed'], 2) }} · Owes ${{ number_format($stats['amount_owes'], 2) }}
                                 @else
                                     You're all settled up
                                 @endif
