@@ -438,6 +438,17 @@
                     </a>
                 @endif
             </div>
+
+            @if(auth()->user()->isAdmin())
+                <div class="nav-divider"></div>
+                <a href="{{ route('admin.dashboard') }}" class="nav-link" style="color:#ff6b6b">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                    Admin Panel
+                </a>
+            @endif
+
             <div class="nav-divider"></div>
             <div class="user-info">
                 <div class="user-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
@@ -471,7 +482,8 @@
                     <div>
                         <h1 class="page-title">Expenses</h1>
                         <p class="page-subtitle">{{ $flatShare->name }} · {{ $expenses->count() }}
-                            {{ Str::plural('expense', $expenses->count()) }}</p>
+                            {{ Str::plural('expense', $expenses->count()) }}
+                        </p>
                     </div>
                     <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
                         <form method="GET" action="{{ route('expenses.index') }}"

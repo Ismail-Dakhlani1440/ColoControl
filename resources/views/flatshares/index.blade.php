@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Flatshare - ColoControll</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=space-grotesk:400,500,600,700|inter:400,500,600" rel="stylesheet" />
-    
+
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <style>
         * {
             margin: 0;
@@ -56,10 +57,23 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(50px, 30px) scale(1.1); }
-            50% { transform: translate(20px, -20px) scale(0.9); }
-            75% { transform: translate(-30px, 10px) scale(1.05); }
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            25% {
+                transform: translate(50px, 30px) scale(1.1);
+            }
+
+            50% {
+                transform: translate(20px, -20px) scale(0.9);
+            }
+
+            75% {
+                transform: translate(-30px, 10px) scale(1.05);
+            }
         }
 
         /* Dashboard container */
@@ -593,6 +607,7 @@
         /* Modal Styles */
     </style>
 </head>
+
 <body>
     <!-- Animated background shapes -->
     <div class="shape shape-1"></div>
@@ -604,7 +619,7 @@
             <div class="nav-brand">
                 <div class="nav-brand-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 12h3l3-9 3 18 3-9h3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 12h3l3-9 3 18 3-9h3" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
                 <h2>ColoControll</h2>
@@ -614,44 +629,55 @@
                 <!-- Flatshare (Active) -->
                 <a href="{{ route('flatshares.index') }}" class="nav-link active">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        <polyline points="9 22 9 12 15 12 15 22"/>
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
                     </svg>
                     Flatshare
                 </a>
-                
+
                 <!-- Expenses -->
                 <a href="{{ route('expenses.index') }}" class="nav-link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
                     </svg>
                     Expenses
                 </a>
-                
+
                 <!-- Who Owes Who -->
                 <a href="{{ route('debts.index') }}" class="nav-link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 12V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
-                        <path d="M16.5 16.5L21 21"/>
-                        <path d="M21 16.5L16.5 21"/>
+                        <path
+                            d="M21 12V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" />
+                        <path d="M16.5 16.5L21 21" />
+                        <path d="M21 16.5L16.5 21" />
                     </svg>
                     Who Owes Who
                 </a>
-                
+
                 <!-- Categories - Owner only -->
                 @if($flatShare && auth()->id() === $flatShare->owner_id)
                     <a href="{{ route('categories.index') }}" class="nav-link">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="7" height="7"/>
-                            <rect x="14" y="3" width="7" height="7"/>
-                            <rect x="14" y="14" width="7" height="7"/>
-                            <rect x="3" y="14" width="7" height="7"/>
+                            <rect x="3" y="3" width="7" height="7" />
+                            <rect x="14" y="3" width="7" height="7" />
+                            <rect x="14" y="14" width="7" height="7" />
+                            <rect x="3" y="14" width="7" height="7" />
                         </svg>
                         Categories
                     </a>
                 @endif
             </div>
+
+            @if(auth()->user()->isAdmin())
+                <div class="nav-divider"></div>
+                <a href="{{ route('admin.dashboard') }}" class="nav-link" style="color:#ff6b6b">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                    Admin Panel
+                </a>
+            @endif
 
             <div class="nav-divider"></div>
 
@@ -664,11 +690,12 @@
                     <div class="user-name">{{ auth()->user()->name }}</div>
                     <div class="user-email">{{ auth()->user()->email }}</div>
                 </div>
-                <a href="{{ route('logout') }}" class="logout-btn" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <a href="{{ route('logout') }}" class="logout-btn"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                        <polyline points="16 17 21 12 16 7"/>
-                        <line x1="21" y1="12" x2="9" y2="12"/>
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
                     </svg>
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
@@ -677,7 +704,7 @@
             </div>
         </nav>
 
-        <!-- Main Content -->       
+        <!-- Main Content -->
         <main class="main-content">
             <div class="content-wrapper">
                 @if(!$flatShare)
@@ -692,24 +719,27 @@
                     <div class="empty-state">
                         <div class="empty-state-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <path d="M3 12h3l3-9 3 18 3-9h3" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M3 12h3l3-9 3 18 3-9h3" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </div>
                         <h3>You're not part of any flatshare yet</h3>
-                        <p>Create a new flatshare and invite your roommates, or join an existing one with an invite token.</p>
-                        
+                        <p>Create a new flatshare and invite your roommates, or join an existing one with an invite token.
+                        </p>
+
                         <div class="empty-state-actions">
                             <a href="{{ route('flatshares.create') }}" class="btn-primary">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="5" x2="12" y2="19"/>
-                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
                                 </svg>
                                 Create Flatshare
                             </a>
-                            
+
                             <button onclick="openTokenModal()" class="btn-secondary">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M2 12h20M12 2v20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14"/>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M2 12h20M12 2v20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14" />
                                 </svg>
                                 Join with Token
                             </button>
@@ -724,8 +754,8 @@
                         </div>
                         <div class="flatshare-badge">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                <circle cx="12" cy="7" r="4"/>
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
                             </svg>
                             {{ $stats['roommate_count'] }} {{ Str::plural('Roommate', $stats['roommate_count']) }}
                         </div>
@@ -737,9 +767,9 @@
                             <div class="stat-header">
                                 <div class="stat-icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/>
-                                        <path d="M12 6v2M12 16v2"/>
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
+                                        <path d="M12 6v2M12 16v2" />
                                     </svg>
                                 </div>
                                 <span class="stat-label">Total Spent</span>
@@ -747,15 +777,15 @@
                             <div class="stat-value">${{ number_format($stats['total_spent'], 2) }}</div>
                             <div class="stat-helper">All time expenses</div>
                         </div>
-                        
+
                         <!-- User Balance -->
                         <div class="stat-card">
                             <div class="stat-header">
                                 <div class="stat-icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M21 12v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h7"/>
-                                        <polyline points="15 5 20 5 20 10"/>
-                                        <line x1="10" y1="14" x2="20" y2="4"/>
+                                        <path d="M21 12v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h7" />
+                                        <polyline points="15 5 20 5 20 10" />
+                                        <line x1="10" y1="14" x2="20" y2="4" />
                                     </svg>
                                 </div>
                                 <span class="stat-label">Your Balance</span>
@@ -765,9 +795,11 @@
                             </div>
                             <div class="stat-helper">
                                 @if($stats['user_balance'] > 0)
-                                    Owed ${{ number_format($stats['amount_owed'], 2) }} · Owes ${{ number_format($stats['amount_owes'], 2) }}
+                                    Owed ${{ number_format($stats['amount_owed'], 2) }} · Owes
+                                    ${{ number_format($stats['amount_owes'], 2) }}
                                 @elseif($stats['user_balance'] < 0)
-                                    Owed ${{ number_format($stats['amount_owed'], 2) }} · Owes ${{ number_format($stats['amount_owes'], 2) }}
+                                    Owed ${{ number_format($stats['amount_owed'], 2) }} · Owes
+                                    ${{ number_format($stats['amount_owes'], 2) }}
                                 @else
                                     You're all settled up
                                 @endif
@@ -779,15 +811,16 @@
                             <div class="stat-header">
                                 <div class="stat-icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="9" cy="7" r="4"/>
-                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                                     </svg>
                                 </div>
                                 <span class="stat-label">Fair Share</span>
                             </div>
-                            <div class="stat-value">${{ number_format($stats['total_spent'] / $stats['roommate_count'], 2) }}</div>
+                            <div class="stat-value">
+                                ${{ number_format($stats['total_spent'] / $stats['roommate_count'], 2) }}</div>
                             <div class="stat-helper">Per person ({{ $stats['roommate_count'] }} people)</div>
                         </div>
                     </div>
@@ -800,17 +833,19 @@
                                 <form action="{{ route('invitations.store') }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn-icon" title="Invite new roommate">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <line x1="12" y1="5" x2="12" y2="19"/>
-                                            <line x1="5" y1="12" x2="19" y2="12"/>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <line x1="12" y1="5" x2="12" y2="19" />
+                                            <line x1="5" y1="12" x2="19" y2="12" />
                                         </svg>
                                     </button>
                                 </form>
                             @elseif(auth()->id() === $flatShare->owner_id && !$flatShare->hasAvailableSpace())
                                 <button disabled class="btn-icon opacity-50 cursor-not-allowed" title="No space available">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <line x1="12" y1="5" x2="12" y2="19"/>
-                                        <line x1="5" y1="12" x2="19" y2="12"/>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
                                     </svg>
                                 </button>
                             @endif
@@ -830,18 +865,21 @@
                                     <div class="roommate-info">
                                         <div class="roommate-name">{{ $roommate['name'] }}</div>
                                         <div class="roommate-meta">
-                                            <span>Joined {{ \Carbon\Carbon::parse($roommate['joined_date'])->format('M d, Y') }}</span>
+                                            <span>Joined
+                                                {{ \Carbon\Carbon::parse($roommate['joined_date'])->format('M d, Y') }}</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="reputation-badge {{ $roommate['reputation'] >= 4 ? 'high' : '' }}">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                                     </svg>
                                     {{ $roommate['reputation'] }} Reputation
                                 </div>
-                                <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid #f0f0f0;font-size:.82rem;font-weight:600;
-                                    color: {{ $roommate['balance'] > 0 ? '#0d9488' : ($roommate['balance'] < 0 ? '#e11d48' : '#888') }}">
+                                <div
+                                    style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid #f0f0f0;font-size:.82rem;font-weight:600;
+                                            color: {{ $roommate['balance'] > 0 ? '#0d9488' : ($roommate['balance'] < 0 ? '#e11d48' : '#888') }}">
                                     @if($roommate['balance'] > 0)
                                         Owed +${{ number_format($roommate['balance'], 2) }}
                                     @elseif($roommate['balance'] < 0)
@@ -859,17 +897,16 @@
     </div>
 
     <!-- Join with Token Modal -->
-    <div id="tokenModal"
-         class="hidden fixed inset-0 z-50 flex items-center justify-center"
-         style="background: rgba(0,0,0,0.5)">
+    <div id="tokenModal" class="hidden fixed inset-0 z-50 flex items-center justify-center"
+        style="background: rgba(0,0,0,0.5)">
         <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md mx-4">
 
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-gray-800">Join a Flatshare</h3>
                 <button onclick="closeTokenModal()" class="text-gray-400 hover:text-gray-600 transition">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"/>
-                        <line x1="6" y1="6" x2="18" y2="18"/>
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
                 </button>
             </div>
@@ -879,26 +916,24 @@
             </p>
 
             <div class="mb-4">
-                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                        Invitation Token
-                    </label>
-                    <input type="text"
-                           id="tokenInput"
-                           placeholder="Paste your token here..."
-                           class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-[#ff6b6b] transition">
-                </div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                    Invitation Token
+                </label>
+                <input type="text" id="tokenInput" placeholder="Paste your token here..."
+                    class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-[#ff6b6b] transition">
+            </div>
 
-                <div class="flex gap-3 mt-6">
-                    <button type="button" onclick="closeTokenModal()"
-                            class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-600 font-semibold hover:bg-gray-50 transition">
-                        Cancel
-                    </button>
-                    <button type="button" onclick="goToInvitation()"
-                            class="flex-1 px-4 py-3 rounded-xl text-white font-semibold hover:opacity-90 transition"
-                            style="background: linear-gradient(135deg, #ff6b6b, #4ecdc4)">
-                        View Invitation
-                    </button>
-                </div>
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closeTokenModal()"
+                    class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-600 font-semibold hover:bg-gray-50 transition">
+                    Cancel
+                </button>
+                <button type="button" onclick="goToInvitation()"
+                    class="flex-1 px-4 py-3 rounded-xl text-white font-semibold hover:opacity-90 transition"
+                    style="background: linear-gradient(135deg, #ff6b6b, #4ecdc4)">
+                    View Invitation
+                </button>
+            </div>
 
         </div>
     </div>
@@ -915,9 +950,10 @@
             if (!token) return;
             window.location.href = '/invitations/' + token;
         }
-        document.getElementById('tokenModal').addEventListener('click', function(e) {
+        document.getElementById('tokenModal').addEventListener('click', function (e) {
             if (e.target === this) closeTokenModal();
         });
     </script>
 </body>
+
 </html>
