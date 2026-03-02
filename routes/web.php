@@ -4,14 +4,17 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\InvitationController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\User\CategorieController;
+use App\Http\Controllers\User\ExpenseController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\FlatShareController;
 
 Route::get('/', function () {
-    return view('auth.register');
+    return redirect()->route('flatshares.index');
 });
 
 Route::middleware('auth')->group(function () {
+    Route::resource('expenses', ExpenseController::class)->except(['edit', 'update']);
+Route::post('/expenses/{expense}/mark-paid', [ExpenseController::class, 'markPaid'])->name('expenses.markPaid');
     Route::resource('flatshares', FlatShareController::class);
     Route::resource('invitations', InvitationController::class);
     Route::resource('categories', CategorieController::class)->except(['show']);

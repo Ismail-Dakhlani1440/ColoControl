@@ -621,7 +621,7 @@
                 </a>
                 
                 <!-- Expenses -->
-                <a href="#" class="nav-link">
+                <a href="{{ route('expenses.index') }}" class="nav-link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
                         <path d="M12 6v6l4 2"/>
@@ -761,13 +761,13 @@
                                 <span class="stat-label">Your Balance</span>
                             </div>
                             <div class="stat-value {{ $stats['user_balance'] >= 0 ? 'positive' : 'negative' }}">
-                                ${{ number_format(abs($stats['user_balance']), 2) }}
+                                {{ $stats['user_balance'] >= 0 ? '+' : '-' }}${{ number_format(abs($stats['user_balance']), 2) }}
                             </div>
                             <div class="stat-helper">
                                 @if($stats['user_balance'] > 0)
-                                    You are owed money
+                                    Owed ${{ number_format($stats['amount_owed'] ?? 0, 2) }} · Owes ${{ number_format($stats['amount_owes'] ?? 0, 2) }}
                                 @elseif($stats['user_balance'] < 0)
-                                    You owe money
+                                    Owed ${{ number_format($stats['amount_owed'] ?? 0, 2) }} · Owes ${{ number_format($stats['amount_owes'] ?? 0, 2) }}
                                 @else
                                     You're all settled up
                                 @endif
@@ -839,6 +839,16 @@
                                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                                     </svg>
                                     {{ $roommate['reputation'] }} Reputation
+                                </div>
+                                <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid #f0f0f0;font-size:.82rem;font-weight:600;
+                                    color: {{ $roommate['balance'] > 0 ? '#0d9488' : ($roommate['balance'] < 0 ? '#e11d48' : '#888') }}">
+                                    @if($roommate['balance'] > 0)
+                                        Owed +${{ number_format($roommate['balance'], 2) }}
+                                    @elseif($roommate['balance'] < 0)
+                                        Owes ${{ number_format(abs($roommate['balance']), 2) }}
+                                    @else
+                                        Settled up
+                                    @endif
                                 </div>
                             </div>
                         @endforeach

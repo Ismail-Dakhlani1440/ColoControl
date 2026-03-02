@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Categorie;
+use App\Http\Requests\StoreCategorieRequest;
+use App\Http\Requests\UpdateCategorieRequest;
 
 class CategorieController extends Controller
 {
@@ -38,16 +40,9 @@ class CategorieController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCategorieRequest $request)
     {
         $flatShare = Auth::user()->activeFlatShare()->first();
-
-        abort_if(!$flatShare || $flatShare->owner_id !== Auth::id(), 403);
-
-        $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'color' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
-        ]);
 
         $flatShare->categories()->create($request->only('title', 'color'));
 
@@ -79,18 +74,8 @@ class CategorieController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Categorie $category)
+    public function update(UpdateCategorieRequest $request, Categorie $category)
     {
-        $flatShare = Auth::user()->activeFlatShare()->first();
-
-        abort_if(!$flatShare || $flatShare->owner_id !== Auth::id(), 403);
-        abort_if($category->flat_share_id !== $flatShare->id, 403);
-
-        $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'color' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
-        ]);
-
         $category->update($request->only('title', 'color'));
 
         return redirect()->route('categories.index')
