@@ -36,7 +36,7 @@ class Expense extends Model
 
     public function categorie(): BelongsTo
     {
-        return $this->belongsTo(Categorie::class);
+        return $this->belongsTo(Categorie::class, 'category_id');
     }
 
     public function users(): BelongsToMany
@@ -49,7 +49,7 @@ class Expense extends Model
 
     public function payments(): HasMany
     {
-        return $this->hasMany(Payment::class, 'expense_id');
+        return $this->hasMany(Payment::class, 'expense_id')->from('payments');
     }
 
      public function getSplitAmount(): float
@@ -94,7 +94,7 @@ class Expense extends Model
         foreach ($activeUsers as $user) {
             if (!$this->users()->where('user_id', $user->id)->exists()) {
                 $this->users()->attach($user->id, [
-                    'payed' => ($user->id === $this->payer_id),
+                    'payed' => ($user->id == $this->payer_id),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

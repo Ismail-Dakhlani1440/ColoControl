@@ -15,46 +15,37 @@ class FlatShareController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
+        $user      = Auth::user();
         $flatShare = $user->activeFlatShare()->first();
-        $stats = null;
-        
+        $stats     = null;
+
         if ($flatShare) {
-            $flatShare->load(['owner', 'activeUsers', 'expenses']);
-            
-            $totalSpent = $flatShare->expenses()->sum('ammount');
+            $flatShare->load(['owner', 'activeUsers']);
+
             $activeMembers = $flatShare->activeUsers;
-            $memberCount = $activeMembers->count();
-            
-            $userPaid = $flatShare->expenses()
-                ->where('payer_id', $user->id)
-                ->sum('ammount');
-            
-            $fairShare = $memberCount > 0 ? $totalSpent / $memberCount : 0;
-            
-            $userBalance = $userPaid - $fairShare;
-            
-            $roommates = $activeMembers->map(function ($member) use ($flatShare) {
-                return [
-                    'id' => $member->id,
-                    'name' => $member->name,
-                    'reputation' => $member->reputation,
-                    'joined_date' => $member->pivot->joined_at,
-                    'badge' => $member->id === $flatShare->owner_id ? 'owner' : 'member',
-                ];
-            });
-            
+            $memberCount   = $activeMembers->count();
+
+            $roommates = $activeMembers->map(fn($member) => [
+                'id'          => $member->id,
+                'name'        => $member->name,
+                'reputation'  => $member->reputation,
+                'joined_date' => $member->pivot->joined_at,
+                'badge'       => $member->id === $flatShare->owner_id ? 'owner' : 'member',
+                'balance'     => $member->balanceInFlatShare($flatShare),
+            ]);
+
             $stats = [
-                'total_spent' => $totalSpent,
-                'user_balance' => $userBalance,
-                'roommate_count' => $memberCount,
-                'roommates' => $roommates,
+                'total_spent'    => $flatShare->expenses()->sum('ammount') ?? 0,
+                'user_balance'   => $user->balanceInFlatShare($flatShare) ?? 0,
+                'amount_owed'    => $user->amountOwedInFlatShare($flatShare) ?? 0,
+                'amount_owes'    => $user->amountOwingInFlatShare($flatShare) ?? 0,
+                'roommate_count' => $memberCount ?? 0,
+                'roommates'      => $roommates,
             ];
         }
-        
+
         return view('flatshares.index', compact('flatShare', 'stats'));
     }
-
     /**
      * Show the form for creating a new resource.
      */
