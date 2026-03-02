@@ -71,7 +71,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v2M12 16v2"/></svg>
                 Expenses
             </a>
-            <a href="{{ route('debts.index') }}" class="nav-link">
+            <a href="#" class="nav-link">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="M16.5 16.5L21 21"/><path d="M21 16.5L16.5 21"/></svg>
                 Who Owes Who
             </a>
@@ -82,17 +82,6 @@
                 </a>
             @endif
         </div>
-
-        @if(auth()->user()->isAdmin())
-                <div class="nav-divider"></div>
-                <a href="{{ route('admin.dashboard') }}" class="nav-link" style="color:#ff6b6b">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg>
-                    Admin Panel
-                </a>
-        @endif
-
         <div class="nav-divider"></div>
         <div class="user-info">
             <div class="user-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
@@ -165,7 +154,7 @@
                         <select id="category_id" name="category_id" class="form-select">
                             <option value="">— None —</option>
                             @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
+                                <option value="{{ $cat->id }}" {{ old('category_id', $categories->first()?->id) == $cat->id ? 'selected' : '' }}>
                                     {{ $cat->title }}
                                 </option>
                             @endforeach

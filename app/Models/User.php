@@ -158,4 +158,16 @@ class User extends Authenticatable
         return $owed - $owing;
     }
 
+    public function adjustReputationOnLeave(FlatShare $flatShare): void
+    {
+        $stillOwes        = $this->amountOwingInFlatShare($flatShare) > 0;
+        $othersOweHim     = $this->amountOwedInFlatShare($flatShare) > 0;
+
+        if ($stillOwes) {
+            $this->decrement('reputation');
+        } elseif ($othersOweHim) {
+            $this->increment('reputation');
+        }
+    }
+
 }
