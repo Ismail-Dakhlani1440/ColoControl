@@ -60,6 +60,22 @@ class FlatShare extends Model
         return $this->activeUsers()->count() < $this->max_flatmate;
     }
 
+    public function removeMember(User $user): void
+    {
+        $this->users()->updateExistingPivot($user->id, ['left_at' => now()]);
+    }
+
+    public function cancelAndRemoveAll(): void
+    {
+        $activeMembers = $this->activeUsers()->get();
+
+        foreach ($activeMembers as $member) {
+            $this->removeMember($member);
+        }
+
+        $this->update(['status' => 'cancelled']);
+    }
+
     public function getDebtBetween(User $debtor, User $creditor): float
     {
         $expenses = $this->expenses()->with('payments')->get();

@@ -14,6 +14,9 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::delete('/flatshares/leave',              [FlatShareController::class, 'leave'])->name('flatshares.leave');
+    Route::delete('/flatshares/cancel',             [FlatShareController::class, 'cancel'])->name('flatshares.cancel');
+    Route::delete('/flatshares/members/{member}',   [FlatShareController::class, 'removeMember'])->name('flatshares.removeMember');
     Route::resource('expenses', ExpenseController::class)->except(['edit', 'update']);
     Route::post('/expenses/{expense}/mark-paid', [ExpenseController::class, 'markPaid'])->name('expenses.markPaid');
     Route::resource('flatshares', FlatShareController::class);

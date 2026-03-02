@@ -52,10 +52,10 @@ class Expense extends Model
         return $this->hasMany(Payment::class, 'expense_id')->from('payments');
     }
 
-     public function getSplitAmount(): float
+    public function getSplitAmount(): float
     {
-        $activeUsers = $this->flatShare->activeUsers()->count();
-        return $activeUsers > 0 ? round($this->ammount / $activeUsers, 2) : 0;
+        $memberCountAtCreation = $this->payments()->count();
+        return $memberCountAtCreation > 0 ? round($this->ammount / $memberCountAtCreation, 2) : 0;
     }
 
     public function getDebtors()
@@ -76,9 +76,9 @@ class Expense extends Model
 
     public function isSettled(): bool
     {
-        $totalUsers = $this->flatShare->activeUsers()->count();
-        $paidCount = $this->users()->wherePivot('payed', true)->count();
-        return $paidCount === $totalUsers;
+        $totalInSplit = $this->payments()->count();
+        $paidCount    = $this->payments()->where('payed', true)->count();
+        return $paidCount === $totalInSplit;
     }
 
     public function getOwedAmount(): float

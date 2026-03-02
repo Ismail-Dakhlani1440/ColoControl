@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
         if (User::count() === 0) {
             $role = Role::firstOrCreate(['title' => 'admin']);
         } else {
-            $role = Role::firstOrCreate(['title' => 'admin']);
+            $role = Role::firstOrCreate(['title' => 'user']);
         }
 
 
